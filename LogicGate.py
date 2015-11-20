@@ -86,14 +86,14 @@ class NotGate(UnaryGate):
 
 
 
-g=NotGate("g")
-print g.getOutput()
+#g=NotGate("g")
+#print g.getOutput()
 
-#g1=AndGate("G1")
-#print g1.getOutput()
+g1=AndGate("G1")
+print g1.getOutput()
 
-#g2=OrGate("G2")
-#print g2.getOutput()
+g2=OrGate("G2")
+print g2.getOutput()
 
 
 
