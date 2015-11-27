@@ -12,6 +12,6 @@ Veri Yapıları Dersi
 <h3>Kullanılan Methodlar:</h3>
 <ul>
 <li>.capitalize()</li>
-<li>.is_lower()</li>
+<li>.islower()</li>
 <li>.str()</li>
 </ul>
