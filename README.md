@@ -15,3 +15,8 @@ Veri Yapıları Dersi
 <li>.islower()</li>
 <li>.str()</li>
 </ul>
+
+<h3>Kütüphaneler:</h3>
+<ul>
+<li>re</li>
+</ul>
