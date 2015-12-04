@@ -24,13 +24,15 @@ def parChecker(symbolString):
 
 	while index < len(symbolString) and balanced:
 		symbol = symbolString[index]
-		if symbol== "(":
+		if symbol in "([{":
 			s.push(symbol)
 		else:
 			if s.isEmpty():
 				balanced=False
 			else:
-				s.pop()
+				top = s.pop()
+				if not matches(top,symbol):
+					balanced=False
 
 		index=index+1
 
@@ -39,12 +41,21 @@ def parChecker(symbolString):
 	else:
 		return s.size()
 
-x= parChecker('(()(())')
+def matches(open,close):
+	opens	= "([{"
+	closers=")]}"
+	return opens.index(open)==closers.index(close)
+
+
+
+
+
+x= parChecker('([{})')
 
 if x==True:
 	print "Duzenli parantez"
 else:
-	if s.size()>0:
+	if x>0:
 		print "Acilmis ancak kapanmamis "+str(x)+" parantez var"
 	else:
 		print "Kapanmis ancak acilmamis parantez var"
