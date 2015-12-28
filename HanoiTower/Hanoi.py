@@ -31,21 +31,21 @@ class Hanoi:
     
     for i in range(self.move-1,-1,-1):
       try:
-        kaynak = self.tower[1].show()[i]
+        source = self.tower[1].show()[i]
       except IndexError:
-        kaynak = " "
+        source = " "
       
       try:
-        yard = self.tower[2].show()[i]
+        helper = self.tower[2].show()[i]
       except IndexError:
-        yard = " "
+        helper = " "
 
       try:
-        hedef = self.tower[3].show()[i]
+        target = self.tower[3].show()[i]
       except IndexError:
-        hedef = " "
+        target = " "
       
-      print kaynak,' | ', yard,' | ',hedef
+      print source,' | ', helper,' | ',target
    
     print '\n' 
 
