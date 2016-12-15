@@ -27,7 +27,7 @@ end
 
 #Bazı taglar vardır ki kapatmak için ayrı tag gerekmex f.e: <img src="foo.png" />
 def specific tag
-	specific = %w(link img script input br hr meta param !DOCTYPE !--)
+	specific = %w(link img input br hr meta param !DOCTYPE !--)
 	specific.include? tag.gsub('/','')
 end
 
@@ -69,7 +69,7 @@ def parChecker htmlString
 	
 end
 
-check = html_filter 'yakin.html'
+check = html_filter 'index.html'
 clear = parChecker check
 
 if clear != true
