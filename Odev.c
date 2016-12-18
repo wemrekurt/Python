@@ -1,35 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#define MAXSIZE 324
 
 // Graph için her bir düğüme Vertex dedik.
 struct Vertex {
   int key;
   char val;
-  char color;
-  int distance;
-  int adjSize;
-  struct Vertex* pred;
-  struct AdjList* adjs;
+  char color; // W: White, g: Grey, b: Black
+  int distance; // Bu dugumun, BFSe gonderilen diger dugume uzakligi.
+  int adjSize; // Komsu Sayisi
+  struct Vertex* pred; // BFS
+  struct AdjList* adjs; // Komsular
 };
 
-// Düğümün komşularını tutacağımız AdjList yapısı
+// Dugumun komsularini tutacagiz
 struct AdjList {
   struct Vertex* vertex;
 };
 
-// Graph içindeki düğümleri tutacağımız VertexList yapısı
+// Graph icindeki dugulmeri tutacagimiz liste
 struct VertexList {
   struct Vertex* vertex;
 };
 
-// Graph yapısı
+// Graph yapisi
 struct Graph {
   int size;
   struct VertexList* array;
 };
 
-// Düğüm ekleme fonksiyonu (dönüş elemanının türü Vertex)
+// Graphe yeni bir dugum eklemek icin..
 struct Vertex* addVertex(struct Graph* graph, int key, char val){
   struct Vertex* newNode = (struct Vertex*) malloc(sizeof(struct Vertex));
   newNode->key = key;
@@ -48,19 +48,20 @@ struct Vertex* addVertex(struct Graph* graph, int key, char val){
   return newNode;
 }
 
-// Komşuluk ilişkisi oluşturmak için yazdığımız fonksiyon.
+// Dugumler arasi komsuluk iliski olusturmak icin.
 void addEdge(struct Graph* graph, int src, int dest){
 
   int i;
   int state = 0;
-  // src keyli düğüme dest keyli düğümü komşu olarak ekliyoruz.
+  // src keyli dugume dest keyli dugumu komsu ekliyoruz
   for(i = 0; i < graph->size; i++){
     if(graph->array[src].vertex->adjs[i].vertex == NULL){
       graph->array[src].vertex->adjs[i].vertex = graph->array[dest].vertex;
       graph->array[src].vertex->adjSize = graph->array[src].vertex->adjSize +1;
       break;
     }else{
-      // Daha once komsuluk iliskisi kurulmus aynı elemanlar icin tekrar kurulmaması gerekiyor.
+      // Daha once komsuluk iliskisi kurulmus aynı elemanlar icin tekrar
+      // kurulmaması gerekiyor.
       if(graph->array[src].vertex->adjs[i].vertex->key == dest){
         state = 1;
         break;
@@ -68,7 +69,7 @@ void addEdge(struct Graph* graph, int src, int dest){
     }
   }
 
-  // dest keyli düğüme src keyli düğümü komşu olarak ekliyoruz.
+  // dest keyli düğüme src keyli dugumu komsu ekliyoruz
   if(state == 0){
     for(i = 0; i < graph->size; i++){
       if(graph->array[dest].vertex->adjs[i].vertex == NULL){
@@ -77,21 +78,23 @@ void addEdge(struct Graph* graph, int src, int dest){
         break;
       }
     }
-    // printf("%c ve %c arasinda kenar olusturuldu \n", graph->array[src].vertex->val, graph->array[dest].vertex->val);
+    // printf("%c ve %c arasinda kenar olusturuldu \n",
+    // graph->array[src].vertex->val, graph->array[dest].vertex->val);
   }else{
-    printf("%c ve %c arasinda daha once kenar olusturulmus. O nedenle kenar olusturulmadi. \n", graph->array[src].vertex->val, graph->array[dest].vertex->val);
+    printf("%c ve %c arasinda daha once kenar olusturulmus. O nedenle kenar olusturulmadi. \n",
+    graph->array[src].vertex->val, graph->array[dest].vertex->val);
   }
 
 }
 
-// Graph oluşturduğumuz fonksiyon.
+// Graph ilkledigimiz fonksiyon.
 struct Graph* createGraph(int size){
   struct Graph* graph = (struct Graph*) malloc(sizeof(struct Graph));
   graph->size = size;
 
   graph->array = (struct VertexList*) malloc(size * sizeof(struct VertexList));
 
-   // Tüm değerleri null yaparak her bir düğümü durumunu boş olarak ilkliyoruz
+   // Arraydeki tum degerleri null yaparak her bir vertex elemanini bos olarak ilkliyoruz.
   int i;
   for (i = 0; i < size; ++i)
     graph->array[i].vertex = NULL;
@@ -99,7 +102,7 @@ struct Graph* createGraph(int size){
   return graph;
 }
 
-// Bir düğümün komşularını listeleyen fonksiyon
+// Bir dugumun komsularini listeleyen fonksiyon
 void listNeighbors(struct Graph* graph, int key){
   int i;
   printf("%c 'den gidilebilecek yerler: \n", graph->array[key].vertex->val);
@@ -113,15 +116,18 @@ void listNeighbors(struct Graph* graph, int key){
   }
 }
 
-// Tüm düğümlerin key-value görebilmek için printVertex fonksiyonu
+// Graph icindeki tum dugumleri key, value, renk, uzaklik, onceki dugum gibi
+// bilgileri listeleyebilecegimiz yardimci fonksiyon.
 void printVertex(struct Graph* graph){
   int v;
   for (v = 0; v < graph->size; ++v) {
     struct Vertex* pCrawl = graph->array[v].vertex;
     if(pCrawl->pred != NULL){
-      printf("Key: %d Value: %c Color: %c Distance: %d Pred: %c \n", v, pCrawl->val, pCrawl->color, pCrawl->distance, pCrawl->pred->val);
+      printf("Key: %d Value: %c Color: %c Distance: %d Pred: %c \n",
+        v, pCrawl->val, pCrawl->color, pCrawl->distance, pCrawl->pred->val);
     }else{
-      printf("Key: %d Value: %c Color: %c Distance: %d Pred: NULL \n", v, pCrawl->val, pCrawl->color, pCrawl->distance);
+      printf("Key: %d Value: %c Color: %c Distance: %d Pred: NULL \n",
+        v, pCrawl->val, pCrawl->color, pCrawl->distance);
     }
 
     listNeighbors(graph, pCrawl->key);
@@ -130,86 +136,112 @@ void printVertex(struct Graph* graph){
 
 
 /**
-  Tüm yolları bulmak için recrusive bir fonksiyon kullanacagiz. Bu fonksiyon
-  icinde cikmaz yok oldugunda bir onceki dugumden devam etmesi gerekeceginden
-  bir de stack veri yapisina ihtiyac var.
+  DFS algoritmasi ile tum yollari bulacagiz.
+  Tüm yolları bulmak için recursive bir fonksiyon yazacagiz. Bu fonksiyon
+  icinde cikmaz yol oldugunda bir onceki dugumden devam etmesi gerekeceginden
+  basitçe bir stack veri yapisina ihtiyac var. Bir diziden turetecegiz.
 */
 
 
-struct Stack {
-  int size;
-  int array[];
-};
+int stack[MAXSIZE];
+int top = -1;
+int pathNo = 1;
+int longestWay[2] = {0,0};
 
-struct Stack* createStack(int size){
-  struct Stack* stack = (struct Stack*) malloc(sizeof(struct Stack));
-  stack->size = size;
 
-  int i;
-  // Tum vertex turundeki elemanlari NULL yaparak yigini ilkliyoruz.
-  for (i = 0; i < size; ++i)
-    stack->array[i] = -1;
-
-  return stack;
-
+void initStack(){
+  int x = 0;
+  for(x;x<MAXSIZE;x++)
+    stack[x] = -1;
 }
 
-int push(struct Stack* stack, int key){
-  int i;
-  for(i = 0; i < stack->size; i++){
-    if(stack->array[i] < 0 ){
-      stack->array[i] = key;
-      break;
-    }
+int isempty() {
+  if(top == -1)
+    return 1;
+  else
+    return 0;
+}
+
+int isfull() {
+  if(top == MAXSIZE)
+    return 1;
+  else
+    return 0;
+}
+
+int peek() {
+  return stack[top];
+}
+
+int pop() {
+  int data;
+
+  if(!isempty()) {
+    data = stack[top];
+    stack[top] = -1;
+    top = top - 1;
+    return data;
+  }else {
+    printf("Stack bos, veri cekilemez..\n");
   }
-  return key;
 }
 
-int pull(struct Stack* stack){
-  int i;
-  int j;
-  while(stack->array[i] > -1 && i < stack->size){
-    j = stack->array[i];
-    i++;
+int push(int data) {
+  if(!isfull()) {
+    top = top + 1;
+    stack[top] = data;
+  }else {
+    printf("Stack Dolu, veri eklenemez.\n");
   }
-  stack->array[i-1] = -1;
-  return j;
 }
 
-void printWay(struct Graph* graph, struct Stack* stack){
+// Yolu ekrana yazan fonksiyon. (stack icindeki keylere gore.)
+void printWay(struct Graph* graph, int lastKey){
   int i = 0;
-  while(stack->array[i] > -1){
-    // printf("%c -->",graph->array[stack->array[i]].vertex->val);
-    printf("%d | ",stack->array[i]);
+  printf("PathNo: %d \t",pathNo);
+
+  while(stack[i] != lastKey){
+    printf("%c -->",graph->array[stack[i]].vertex->val);
     i++;
   }
+  printf(" %c \n",graph->array[lastKey].vertex->val);
+  if(i > longestWay[0]){
+    longestWay[0] = i;
+    longestWay[1] = pathNo;
+  }
+  pathNo++;
 }
 
-void findAllWay(struct Graph* graph, struct Stack* stack, int from, int to){
+// DFS algoritmasi.
+void findAllPaths(struct Graph* graph, int from, int to){
   int i = 0;
   int j;
   struct Vertex* v = graph->array[from].vertex;
   v->color = 'g';
-  push(stack, from);
-  for(j = 0; j < v->adjSize; j++){
-    struct Vertex* w = v->adjs[j].vertex;
-    printf("%c (%d) nin komsu: %c (%d) renk %c \n", v->val, v->key, w->val, w->key, w->color);
+  push(from);
 
-    if(w->color == 'w'){
-      if(w->key != to){
-        printWay(graph, stack);
-        printf("\n");  printf("\n");
-        findAllWay(graph, stack, w->key, to);
-      }else{
-        // printWay(graph, stack);
-        printf("%c \n", w->val);
-        pull(stack);
+  if(from == to){
+    printWay(graph, to);
+  }else{
+    for(j = 0; j < v->adjSize; j++){
+      struct Vertex* w = v->adjs[j].vertex;
+      if(w->color == 'w'){
+        findAllPaths(graph, w->key, to);
       }
-    }else{
-      i++;
     }
   }
 
+  pop();
+  v->color = 'w';
+}
+
+void findAllWay(struct Graph* graph, int from, int to){
+  initStack();
+  findAllPaths(graph, from, to);
+  printf("\nNumber Of path/paths from %c to %c: %d \n",
+    graph->array[from].vertex->val, graph->array[to].vertex->val, pathNo - 1);
+  printf("One of the longest way is %d which it has %d node(s).\n",
+    longestWay[1], longestWay[0]+1);
 
 }
 
@@ -218,12 +250,13 @@ int main(){
   // A B C D E F G H I J K  L  M  N  0  P  Q  R
   int sizeOfCities = 18;
   struct Graph* graph = createGraph(sizeOfCities);
-  struct Stack* stack = createStack(sizeOfCities * sizeOfCities);
+
+  // Dugumleri graphta olusturulmasi.
   int i;
   for(i = 0; i < sizeOfCities; i++)
     addVertex(graph, i, i+65);
 
-
+  // Komsuluk iliskilerinin eklenmesi.
   addEdge(graph, 0, 1);   // A-B
   addEdge(graph, 0, 3);   // A-D
   addEdge(graph, 0, 5);   // A-F
@@ -253,34 +286,6 @@ int main(){
   addEdge(graph, 8, 10);  // I-K
   addEdge(graph, 8, 9);   // I-J
 
-
-  listNeighbors(graph,3);
-  // printVertex(graph);
-   findAllWay(graph, stack, 6, 12);
-
-  // push(stack, 0);
-  // push(stack, 12);
-  // push(stack, 15);
-  // printWay(graph, stack);
-  // printf("\n cekilen: %d \n",pull(stack));
-  // printWay(graph,stack);
-  // printf("\n");
-
-
-
-  //
-  // listNeighbors(graph,5);
-
-  // struct Queue* queue = createQueue();
-  // enqueue(queue, graph->array[0].vertex);
-  // enqueue(queue, graph->array[3].vertex);
-  // enqueue(queue, graph->array[1].vertex);
-  // printQueue(queue);
-  // dequeue(queue);
-  // printQueue(queue);
-
-
-  // bfs(graph, 6);
-  // printVertex(graph);
+  findAllWay(graph, 6, 12);
 
 }
